@@ -3,7 +3,6 @@ import {
 	setSessionTokenCookie,
 	deleteSessionTokenCookie
 } from '@/server/auth';
-import { isInGuestRoutes, isInProtectedRoutes } from '@/server/routes';
 import { redirect, type Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 
@@ -28,32 +27,39 @@ const authHandle: Handle = async ({ event, resolve }) => {
 };
 
 const protectRoutesHandle: Handle = async ({ event, resolve }) => {
-	const {
-		locals: { user }
-	} = event;
+	const { user, session } = event.locals;
 
-	if (event.url.pathname.startsWith('/api')) {
-		return resolve(event);
-	}
+	const protectedRoutes = ['/dashboard'];
+	const publicRoutes = ['/', '/sign-in', '/sign-up'];
+	const emailVerificationRoute = '/verify-email';
 
-	if (!user && !isInGuestRoutes(event)) {
-		redirect(307, '/sign-in');
-	}
+	const isAuthenticated = user && session;
+	const isEmailVerified = user?.emailVerified;
 
-	if (isInGuestRoutes(event)) {
-		if (user?.emailVerified) {
-			redirect(307, '/dashboard');
-		} else {
-			redirect(307, '/verify-email');
+	const currentPath = event.url.pathname;
+
+	if (protectedRoutes.includes(currentPath)) {
+		if (!isAuthenticated) {
+			throw redirect(302, '/sign-in');
+		}
+
+		if (!isEmailVerified) {
+			throw redirect(302, '/verify-email');
 		}
 	}
 
-	if (isInProtectedRoutes(event) && !user?.emailVerified) {
-		redirect(307, '/verify-email');
+	if (currentPath === emailVerificationRoute) {
+		if (!isAuthenticated) {
+			throw redirect(302, '/sign-in');
+		}
+
+		if (isEmailVerified) {
+			throw redirect(302, '/dashboard');
+		}
 	}
 
-	if (event.url.pathname === '/verify-email' && user?.emailVerified) {
-		redirect(307, '/dashboard');
+	if (publicRoutes.includes(currentPath) && isAuthenticated) {
+		throw redirect(302, '/dashboard');
 	}
 
 	return resolve(event);
