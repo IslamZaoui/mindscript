@@ -1,8 +1,9 @@
 import { prisma } from '../db';
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from '@oslojs/encoding';
 import { sha256 } from '@oslojs/crypto/sha2';
-import type { User, Session } from '@prisma/client';
+import type { User, Session, EmailVerificationRequest } from '@prisma/client';
 import type { RequestEvent } from '@sveltejs/kit';
+import { dev } from '$app/environment';
 
 export function generateSessionToken(): string {
 	const bytes = new Uint8Array(20);
@@ -38,7 +39,14 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 			id: sessionId
 		},
 		include: {
-			user: true
+			user: {
+				select: {
+					id: true,
+					email: true,
+					emailVerified: true,
+					username: true
+				}
+			}
 		}
 	});
 	if (result === null) {
@@ -71,6 +79,7 @@ export function setSessionTokenCookie(event: RequestEvent, token: string, expire
 	event.cookies.set('session', token, {
 		httpOnly: true,
 		sameSite: 'lax',
+		secure: !dev,
 		expires: expiresAt,
 		path: '/'
 	});
@@ -79,12 +88,40 @@ export function setSessionTokenCookie(event: RequestEvent, token: string, expire
 export function deleteSessionTokenCookie(event: RequestEvent): void {
 	event.cookies.set('session', '', {
 		httpOnly: true,
+		secure: !dev,
 		sameSite: 'lax',
 		maxAge: 0,
 		path: '/'
 	});
 }
 
+export function setEmailVerificationRequestCookie(
+	event: RequestEvent,
+	request: EmailVerificationRequest
+): void {
+	event.cookies.set('email_verification', request.id, {
+		httpOnly: true,
+		path: '/',
+		secure: !dev,
+		sameSite: 'lax',
+		expires: request.expiresAt
+	});
+}
+
+export function deleteEmailVerificationRequestCookie(event: RequestEvent): void {
+	event.cookies.set('email_verification', '', {
+		httpOnly: true,
+		path: '/',
+		secure: !dev,
+		sameSite: 'lax',
+		maxAge: 0
+	});
+}
+
+type UserWithoutPassword = Omit<User, 'hashedPassword'>;
+
+export type { Session, UserWithoutPassword as User };
+
 export type SessionValidationResult =
-	| { session: Session; user: User }
+	| { session: Session; user: UserWithoutPassword }
 	| { session: null; user: null };

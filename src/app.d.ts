@@ -1,4 +1,4 @@
-import type { Session, User } from '$lib/server/session';
+import type { Session, User } from '@/server/auth';
 
 declare global {
 	type Flash = {

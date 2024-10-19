@@ -1,10 +1,8 @@
 import { redirect } from '@sveltejs/kit';
 
-export const load = async ({ parent }) => {
-	const { authData } = await parent();
-
-	if (authData) {
-		redirect(302, '/dashboard');
+export const load = async (event) => {
+	if (!event.locals.user && !event.locals.session) {
+		redirect(302, '/sign-in');
 	}
 
 	return {};

@@ -4,8 +4,15 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { fail } from 'sveltekit-superforms';
 import { checkUsernameAvailability, createUser } from '@/server/db/user.js';
 import { hashPassword } from '@/server/auth/password.js';
-import { createSession, generateSessionToken, setSessionTokenCookie } from '@/server/auth';
+import {
+	createSession,
+	generateSessionToken,
+	setEmailVerificationRequestCookie,
+	setSessionTokenCookie
+} from '@/server/auth';
 import { redirect } from 'sveltekit-flash-message/server';
+import { createEmailVerificationRequest } from '@/server/db/email-verification';
+import { sendVerificationEmail } from '@/server/mail';
 
 export const load = async () => {
 	return {
@@ -38,13 +45,21 @@ export const actions = {
 			hashedPassword
 		});
 
+		const emailVerificationRequest = await createEmailVerificationRequest(user.id, user.email);
+		await sendVerificationEmail(emailVerificationRequest.email, emailVerificationRequest.code);
+		setEmailVerificationRequestCookie(event, emailVerificationRequest);
+
 		const sessionToken = generateSessionToken();
 		const session = await createSession(sessionToken, user.id);
 		setSessionTokenCookie(event, sessionToken, session.expiresAt);
 
 		redirect(
-			'/dashboard',
-			{ type: 'success', message: 'Sign up successful', description: `Welcome ${user.username}.` },
+			'/verify-email',
+			{
+				type: 'success',
+				message: 'Sign up successful',
+				description: `Check your email to verify your account.`
+			},
 			event
 		);
 	}

@@ -18,7 +18,7 @@
 <form method="post" use:enhance class="space-y-6">
 	<Form.Field {form} name="username">
 		<Form.Control let:attrs>
-			<Form.Label>Email</Form.Label>
+			<Form.Label>Username</Form.Label>
 			<Input
 				autocomplete="username"
 				placeholder="Username..."

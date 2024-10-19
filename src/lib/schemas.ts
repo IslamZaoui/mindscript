@@ -39,14 +39,16 @@ export const signUpSchema = z
 		}
 	});
 
-export const signInEmailSchema = z.object({
-	email: emailSchema,
-	password: passwordSchema,
-	rememberMe: z.boolean()
-});
-
 export const signInUsernameSchema = z.object({
 	username: usernameSchema,
 	password: passwordSchema,
-	rememberMe: z.boolean()
+	rememberMe: z.boolean().default(false)
+});
+
+export const emailVerificationCodeSchema = z.object({
+	code: z
+		.string({ required_error: 'Code is required' })
+		.min(8, { message: 'Code must be at least 6 characters' })
+		.max(8, { message: 'Code must be at most 6 characters' })
+		.trim()
 });
