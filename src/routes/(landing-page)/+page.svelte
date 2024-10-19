@@ -11,7 +11,7 @@
 		<div class="flex flex-col items-center space-y-4 text-center">
 			<div class="space-y-2">
 				<h1 class="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
-					Welcome to WriteWave
+					Welcome to MindScript
 				</h1>
 				<p class="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
 					Unleash your creativity, share your stories, and connect with readers from around the
@@ -19,7 +19,7 @@
 				</p>
 			</div>
 			<div class="space-x-4">
-				<Button>Get Started</Button>
+				<Button href="/sign-up">Get Started</Button>
 				<Button variant="outline">Learn More</Button>
 			</div>
 		</div>
@@ -29,7 +29,7 @@
 <section class="w-full bg-muted py-12 md:py-24 lg:py-32">
 	<div class="container px-4 md:px-6">
 		<h2 class="mb-12 text-center text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-			Why Choose WriteWave?
+			Why Choose MindScript?
 		</h2>
 		<div class="grid gap-10 sm:grid-cols-2 md:grid-cols-3">
 			<Card.Root>
@@ -77,11 +77,11 @@
 				<p
 					class="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed"
 				>
-					Join thousands of writers who have already found their voice on WriteWave.
+					Join thousands of writers who have already found their voice on MindScript.
 				</p>
 			</div>
 			<div class="w-full max-w-sm space-y-2">
-				<Button class="w-full">Get Started</Button>
+				<Button href="/sign-up" class="w-full">Get Started</Button>
 				<p class="text-xs text-muted-foreground">
 					By signing up, you agree to our{' '}
 					<a class="underline underline-offset-2 hover:text-primary" href="#">
