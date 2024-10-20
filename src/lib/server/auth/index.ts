@@ -4,6 +4,7 @@ import { sha256 } from '@oslojs/crypto/sha2';
 import type { User, Session, EmailVerificationRequest } from '@prisma/client';
 import type { RequestEvent } from '@sveltejs/kit';
 import { dev } from '$app/environment';
+import { validatePasswordResetSessionToken } from '../db/password-reset';
 
 export function generateSessionToken(): string {
 	const bytes = new Uint8Array(20);
@@ -86,7 +87,7 @@ export function setSessionTokenCookie(event: RequestEvent, token: string, expire
 }
 
 export function deleteSessionTokenCookie(event: RequestEvent): void {
-	event.cookies.set('session', '', {
+	event.cookies.delete('session', {
 		httpOnly: true,
 		secure: !dev,
 		sameSite: 'lax',
@@ -109,7 +110,7 @@ export function setEmailVerificationRequestCookie(
 }
 
 export function deleteEmailVerificationRequestCookie(event: RequestEvent): void {
-	event.cookies.set('email_verification', '', {
+	event.cookies.delete('email_verification', {
 		httpOnly: true,
 		path: '/',
 		secure: !dev,
@@ -117,6 +118,41 @@ export function deleteEmailVerificationRequestCookie(event: RequestEvent): void 
 		maxAge: 0
 	});
 }
+
+export function setPasswordResetSessionTokenCookie(
+	event: RequestEvent,
+	token: string,
+	expiresAt: Date
+): void {
+	event.cookies.set('password_reset_session', token, {
+		expires: expiresAt,
+		sameSite: 'lax',
+		httpOnly: true,
+		path: '/',
+		secure: !dev
+	});
+}
+
+export const deletePasswordResetSessionTokenCookie = (event: RequestEvent) => {
+	event.cookies.delete('password_reset_session', {
+		sameSite: 'lax',
+		httpOnly: true,
+		path: '/',
+		secure: !dev
+	});
+};
+
+export const validatePasswordResetSessionRequest = async (event: RequestEvent) => {
+	const token = event.cookies.get('password_reset_session') ?? null;
+	if (token === null) {
+		return { session: null, user: null };
+	}
+	const result = await validatePasswordResetSessionToken(token);
+	if (result.session === null) {
+		deletePasswordResetSessionTokenCookie(event);
+	}
+	return result;
+};
 
 type UserWithoutPassword = Omit<User, 'hashedPassword'>;
 

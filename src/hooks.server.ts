@@ -30,7 +30,7 @@ const protectRoutesHandle: Handle = async ({ event, resolve }) => {
 	const { user, session } = event.locals;
 
 	const protectedRoutes = ['/dashboard'];
-	const publicRoutes = ['/', '/sign-in', '/sign-up'];
+	const publicRoutes = ['/', '/sign-in', '/sign-up', '/forgot-password'];
 	const emailVerificationRoute = '/verify-email';
 
 	const isAuthenticated = user && session;

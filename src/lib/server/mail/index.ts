@@ -1,5 +1,5 @@
 import { env } from '$env/dynamic/private';
-import { emailVerificationTemplate } from './templates';
+import { emailVerificationTemplate, resetPasswordTemplate } from './templates';
 
 const siteEmail = 'mindscript@islamzaoui.top';
 
@@ -27,6 +27,16 @@ export async function sendVerificationEmail(email: string, code: string) {
 		to: [email],
 		from: siteEmail,
 		subject: 'Verify your email address',
+		html
+	});
+}
+
+export async function sendPasswordResetEmail(email: string, code: string) {
+	const html = resetPasswordTemplate(code);
+	await sendEmail({
+		to: [email],
+		from: siteEmail,
+		subject: 'Reset your password',
 		html
 	});
 }

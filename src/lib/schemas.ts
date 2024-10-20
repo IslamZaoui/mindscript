@@ -21,6 +21,12 @@ const emailSchema = z
 	.email({ message: 'Must be a valid email' })
 	.trim();
 
+const codeSchema = z
+	.string({ required_error: 'Code is required' })
+	.min(8, { message: 'Code must be at least 6 characters' })
+	.max(8, { message: 'Code must be at most 6 characters' })
+	.trim();
+
 export const signUpSchema = z
 	.object({
 		username: usernameSchema,
@@ -46,9 +52,25 @@ export const signInUsernameSchema = z.object({
 });
 
 export const emailVerificationCodeSchema = z.object({
-	code: z
-		.string({ required_error: 'Code is required' })
-		.min(8, { message: 'Code must be at least 6 characters' })
-		.max(8, { message: 'Code must be at most 6 characters' })
-		.trim()
+	code: codeSchema
 });
+
+export const forgotPasswordSchema = z.object({
+	email: emailSchema
+});
+
+export const resetPasswordSchema = z
+	.object({
+		code: codeSchema,
+		password: passwordSchema,
+		confirmPassword: passwordSchema
+	})
+	.superRefine(({ confirmPassword, password }, ctx) => {
+		if (confirmPassword !== password) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: 'Passwords do not match',
+				path: ['confirmPassword']
+			});
+		}
+	});
