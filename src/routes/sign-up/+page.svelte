@@ -1,7 +1,9 @@
 <script>
 	import SignUpForm from '@/components/forms/sign-up-form.svelte';
 	import Feather from 'lucide-svelte/icons/feather';
-
+	import Github from 'lucide-svelte/icons/github';
+	import { Button } from '@/components/ui/button';
+	
 	export let data;
 </script>
 
@@ -14,6 +16,17 @@
 		</div>
 
 		<SignUpForm data={data.form} />
+
+		<div class="my-4 flex items-center justify-center">
+			<div class="w-full border-t border-muted-foreground"></div>
+			<span class="mx-2 text-muted-foreground">or</span>
+			<div class="w-full border-t border-muted-foreground"></div>
+		</div>
+
+		<Button href="/api/auth/github" variant="outline" class="w-full">
+			<Github class="mr-2 size-4" />
+			<span>Sign in with github</span>
+		</Button>
 
 		<p class="text-center text-sm text-muted-foreground">
 			Already have an account?{' '}

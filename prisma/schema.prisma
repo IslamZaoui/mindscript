@@ -12,7 +12,8 @@ model User {
   username                 String                     @unique
   email                    String                     @unique
   emailVerified            Boolean                    @default(false)
-  hashedPassword           String
+  hashedPassword           String?
+  githubId                 Int?
   sessions                 Session[]
   EmailVerificationRequest EmailVerificationRequest[]
   PasswordResetSession     PasswordResetSession[]
@@ -37,11 +38,11 @@ model EmailVerificationRequest {
 }
 
 model PasswordResetSession {
-  id            String   @id
-  userId        String
-  expiresAt     DateTime
-  email         String
-  code          String
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  email     String
+  code      String
 
   user User @relation(references: [id], fields: [userId], onDelete: Cascade)
 }

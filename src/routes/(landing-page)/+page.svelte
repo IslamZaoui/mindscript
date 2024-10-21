@@ -84,7 +84,7 @@
 				<Button href="/sign-up" class="w-full">Get Started</Button>
 				<p class="text-xs text-muted-foreground">
 					By signing up, you agree to our{' '}
-					<a class="underline underline-offset-2 hover:text-primary" href="#">
+					<a class="underline underline-offset-2 hover:text-primary" href="##">
 						Terms & Conditions
 					</a>
 				</p>

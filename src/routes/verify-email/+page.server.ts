@@ -11,11 +11,16 @@ import {
 } from '@/server/db/email-verification';
 import { invalidateUserPasswordResetSessions } from '@/server/db/password-reset';
 import { sendVerificationEmail } from '@/server/mail';
+import { error } from '@sveltejs/kit';
 import { redirect } from 'sveltekit-flash-message/server';
 import { fail, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async (event) => {
+	if (event.locals.session === null || event.locals.user === null) {
+		return error(401, 'Unauthorized');
+	}
+
 	let verificationRequest = await getUserEmailVerificationRequestFromRequest(event);
 	if (verificationRequest === null || Date.now() >= verificationRequest.expiresAt.getTime()) {
 		verificationRequest = await createEmailVerificationRequest(
@@ -34,6 +39,10 @@ export const load = async (event) => {
 
 export const actions = {
 	resend: async (event) => {
+		if (event.locals.session === null || event.locals.user === null) {
+			return error(401, 'Unauthorized');
+		}
+
 		const verificationRequest = await createEmailVerificationRequest(
 			event.locals.user.id,
 			event.locals.user.email
@@ -52,7 +61,7 @@ export const actions = {
 
 	verifyEmail: async (event) => {
 		if (event.locals.session === null || event.locals.user === null) {
-			return fail(401, { message: 'Unauthorized' });
+			return error(401, 'Unauthorized');
 		}
 
 		const form = await superValidate(event, zod(emailVerificationCodeSchema));

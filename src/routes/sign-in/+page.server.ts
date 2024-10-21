@@ -24,7 +24,7 @@ export const actions = {
 			where: { username: form.data.username }
 		});
 
-		if (!user) {
+		if (!user || !user.hashedPassword) {
 			setError(form, 'username', 'Invalid username or password');
 			return fail(400, { form });
 		}

@@ -1,6 +1,8 @@
 <script>
 	import SignInForm from '@/components/forms/sign-in-form.svelte';
-import Feather from 'lucide-svelte/icons/feather';
+	import Feather from 'lucide-svelte/icons/feather';
+	import Github from 'lucide-svelte/icons/github';
+	import { Button } from '@/components/ui/button';
 
 	export let data;
 </script>
@@ -13,7 +15,18 @@ import Feather from 'lucide-svelte/icons/feather';
 			<p class="text-muted-foreground">Sign in to continue your writing journey</p>
 		</div>
 
-        <SignInForm data={data.form} />
+		<SignInForm data={data.form} />
+
+		<div class="my-4 flex items-center justify-center">
+			<div class="w-full border-t border-muted-foreground"></div>
+			<span class="mx-2 text-muted-foreground">or</span>
+			<div class="w-full border-t border-muted-foreground"></div>
+		</div>
+
+		<Button href="/api/auth/github" variant="outline" class="w-full">
+			<Github class="mr-2 size-4" />
+			<span>Sign in with github</span>
+		</Button>
 
 		<p class="text-center text-sm text-muted-foreground">
 			Don't have an account?{' '}

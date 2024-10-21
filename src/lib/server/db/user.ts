@@ -27,3 +27,7 @@ export const invalidateUserSessions = async (userId: string) => {
 export const updateUserPassword = async (userId: string, hashedPassword: string) => {
 	await prisma.user.update({ where: { id: userId }, data: { hashedPassword } });
 };
+
+export const getUserFromGitHubId = async (githubId: number) => {
+	return await prisma.user.findFirst({ where: { githubId } });
+};

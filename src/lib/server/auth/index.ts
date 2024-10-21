@@ -45,7 +45,8 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 					id: true,
 					email: true,
 					emailVerified: true,
-					username: true
+					username: true,
+					githubId: true
 				}
 			}
 		}
