@@ -2,7 +2,7 @@
 	import ResetPasswordForm from '@/components/forms/reset-password-form.svelte';
 	import Feather from 'lucide-svelte/icons/feather';
 
-	export let data;
+	let { data } = $props();
 </script>
 
 <div class="container mx-auto flex min-h-screen flex-col items-center justify-center p-4">

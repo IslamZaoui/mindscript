@@ -7,7 +7,11 @@
 	import { Button } from '@/components/ui/button';
 	import { Checkbox } from '@/components/ui/checkbox';
 
-	export let data: SuperValidated<Infer<typeof signInUsernameSchema>>;
+	interface Props {
+		data: SuperValidated<Infer<typeof signInUsernameSchema>>;
+	}
+
+	let { data }: Props = $props();
 
 	const form = superForm(data, {
 		validators: zod(signInUsernameSchema)
@@ -33,7 +37,7 @@
 		<Form.Control let:attrs>
 			<Form.Label>Password</Form.Label>
 			<Input
-				autocomplete="password"
+				autocomplete="current-password"
 				placeholder="password..."
 				type="password"
 				{...attrs}

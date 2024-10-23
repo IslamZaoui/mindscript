@@ -6,7 +6,11 @@
 	import { Input } from '@/components/ui/input';
 	import { Button } from '@/components/ui/button';
 
-	export let data: SuperValidated<Infer<typeof resetPasswordSchema>>;
+	interface Props {
+		data: SuperValidated<Infer<typeof resetPasswordSchema>>;
+	}
+
+	let { data }: Props = $props();
 
 	const form = superForm(data, {
 		validators: zod(resetPasswordSchema)

@@ -4,7 +4,7 @@
 	import Github from 'lucide-svelte/icons/github';
 	import { Button } from '@/components/ui/button';
 
-	export let data;
+	let { data } = $props();
 </script>
 
 <div class="container mx-auto flex min-h-screen flex-col items-center justify-center p-4">

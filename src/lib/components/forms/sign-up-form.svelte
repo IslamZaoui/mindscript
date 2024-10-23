@@ -7,15 +7,21 @@
 	import { Button } from '@/components/ui/button';
 	import { Checkbox } from '@/components/ui/checkbox';
 
-	export let data: SuperValidated<Infer<typeof signUpSchema>>;
-	export let email: string | undefined = undefined;
+	interface Props {
+		data: SuperValidated<Infer<typeof signUpSchema>>;
+		email: string | undefined;
+	}
+
+	let { data, email }: Props = $props();
 
 	const form = superForm(data, {
 		validators: zod(signUpSchema)
 	});
 	const { form: formData, enhance, delayed } = form;
 
-	$: if (email) $formData.email = email;
+	$effect(() => {
+		if (email) $formData.email = email;
+	});
 </script>
 
 <form method="post" use:enhance class="space-y-6">
@@ -49,7 +55,7 @@
 		<Form.Control let:attrs>
 			<Form.Label>Password</Form.Label>
 			<Input
-				autocomplete="password"
+				autocomplete="new-password"
 				placeholder="password..."
 				type="password"
 				{...attrs}
@@ -62,7 +68,7 @@
 		<Form.Control let:attrs>
 			<Form.Label>Confirm Password</Form.Label>
 			<Input
-				autocomplete="confirm-password"
+				autocomplete="new-password"
 				placeholder="confirm password..."
 				type="password"
 				{...attrs}

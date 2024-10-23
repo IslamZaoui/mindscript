@@ -1,5 +1,7 @@
-<script class="ts">
+<script>
 	import Feather from 'lucide-svelte/icons/feather';
+
+	let { children } = $props();
 </script>
 
 <div class="flex min-h-screen flex-col">
@@ -16,7 +18,7 @@
 	</header>
 
 	<main class="flex-1">
-		<slot />
+		{@render children()}
 	</main>
 
 	<footer

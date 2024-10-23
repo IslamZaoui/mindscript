@@ -4,26 +4,25 @@
 	import Feather from 'lucide-svelte/icons/feather';
 	import Mail from 'lucide-svelte/icons/mail';
 	import { onDestroy } from 'svelte';
-	import { writable } from 'svelte/store';
 	import LogOut from 'lucide-svelte/icons/log-out';
 	import EmailVerificationForm from '@/components/forms/email-verification-form.svelte';
 	import { invalidateAll } from '$app/navigation';
 
-	export let data;
+	let { data } = $props();
 
 	type TimeToExpire = {
 		min: number;
 		sec: number;
 	};
 
-	let timeToExpire = writable<TimeToExpire>();
+	let timeToExpire = $state<TimeToExpire>();
 
 	function updateCountdown() {
 		const totalSeconds = Math.max(
 			0,
 			Math.floor((data.expiresAt.getTime() - new Date().getTime()) / 1000)
 		);
-		$timeToExpire = {
+		timeToExpire = {
 			min: Math.floor(totalSeconds / 60),
 			sec: totalSeconds % 60
 		};
@@ -33,9 +32,11 @@
 		}
 	}
 
-	$: if (data.expiresAt) {
-		updateCountdown();
-	}
+	$effect(() => {
+		if (data.expiresAt) {
+			updateCountdown();
+		}
+	});
 
 	const interval = setInterval(updateCountdown, 1000);
 
@@ -64,10 +65,10 @@
 				<form action="?/resend" method="post" use:enhance>
 					<Button type="submit" variant="link">Resend code</Button>
 				</form>
-				{#if $timeToExpire.min > 0 || $timeToExpire.sec > 0}
+				{#if timeToExpire && (timeToExpire.min > 0 || timeToExpire.sec > 0)}
 					<p class="text-sm text-muted-foreground">
-						code will expire in {String($timeToExpire.min).padStart(2, '0')}:{String(
-							$timeToExpire.sec
+						code will expire in {String(timeToExpire.min).padStart(2, '0')}:{String(
+							timeToExpire.sec
 						).padStart(2, '0')}
 					</p>
 				{/if}

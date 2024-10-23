@@ -6,12 +6,15 @@
 	import { page } from '$app/stores';
 
 	export const flash = getFlash(page);
+	let { children } = $props();
 
-	$: if ($flash) {
-		setSonner($flash);
-		$flash = undefined;
-	}
+	$effect(() => {
+		if ($flash) {
+			setSonner($flash);
+			$flash = undefined;
+		}
+	});
 </script>
 
 <Toaster position="top-center" />
-<slot />
+{@render children()}
