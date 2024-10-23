@@ -1,14 +1,21 @@
 import { forgotPasswordSchema } from '@/schemas';
-import { generateSessionToken, setPasswordResetSessionTokenCookie } from '@/server/auth/index.js';
+import { generateSessionToken, setPasswordResetSessionTokenCookie } from '@/server/auth';
 import {
 	createPasswordResetSession,
 	invalidateUserPasswordResetSessions
 } from '@/server/db/password-reset';
 import { getUserFromEmail } from '@/server/db/user';
 import { sendPasswordResetEmail } from '@/server/mail';
+import { formatTime } from '@/utils/format';
 import { redirect } from 'sveltekit-flash-message/server';
+import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import { fail, setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
+
+const limiter = new RetryAfterRateLimiter({
+	IP: [5, '30m'],
+	IPUA: [3, 'm']
+});
 
 export const load = async () => {
 	return {
@@ -18,6 +25,19 @@ export const load = async () => {
 
 export const actions = {
 	default: async (event) => {
+		const status = await limiter.check(event);
+		if (status.limited) {
+			const time = formatTime(status.retryAfter);
+			redirect(
+				{
+					type: 'error',
+					message: `Too many requests.`,
+					description: `Please try again after ${time}.`
+				},
+				event
+			);
+		}
+
 		const form = await superValidate(event, zod(forgotPasswordSchema));
 
 		if (!form.valid) {

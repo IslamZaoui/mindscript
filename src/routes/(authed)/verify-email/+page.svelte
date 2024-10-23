@@ -6,37 +6,18 @@
 	import { onDestroy } from 'svelte';
 	import LogOut from 'lucide-svelte/icons/log-out';
 	import EmailVerificationForm from '@/components/forms/email-verification-form.svelte';
-	import { invalidateAll } from '$app/navigation';
+	import { formatTime } from '@/utils/format';
 
 	let { data } = $props();
 
-	type TimeToExpire = {
-		min: number;
-		sec: number;
-	};
-
-	let timeToExpire = $state<TimeToExpire>();
+	let timeToExpire = $state<number>(0);
 
 	function updateCountdown() {
-		const totalSeconds = Math.max(
+		timeToExpire = Math.max(
 			0,
 			Math.floor((data.expiresAt.getTime() - new Date().getTime()) / 1000)
 		);
-		timeToExpire = {
-			min: Math.floor(totalSeconds / 60),
-			sec: totalSeconds % 60
-		};
-
-		if (totalSeconds === 0) {
-			invalidateAll();
-		}
 	}
-
-	$effect(() => {
-		if (data.expiresAt) {
-			updateCountdown();
-		}
-	});
 
 	const interval = setInterval(updateCountdown, 1000);
 
@@ -65,11 +46,9 @@
 				<form action="?/resend" method="post" use:enhance>
 					<Button type="submit" variant="link">Resend code</Button>
 				</form>
-				{#if timeToExpire && (timeToExpire.min > 0 || timeToExpire.sec > 0)}
+				{#if timeToExpire > 0}
 					<p class="text-sm text-muted-foreground">
-						code will expire in {String(timeToExpire.min).padStart(2, '0')}:{String(
-							timeToExpire.sec
-						).padStart(2, '0')}
+						code will expire in {formatTime(timeToExpire)}
 					</p>
 				{/if}
 			</div>

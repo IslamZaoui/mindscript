@@ -2,8 +2,8 @@ import { signUpSchema } from '@/schemas';
 import { setError, superValidate } from 'sveltekit-superforms/server';
 import { zod } from 'sveltekit-superforms/adapters';
 import { fail } from 'sveltekit-superforms';
-import { checkUsernameAvailability, createUser } from '@/server/db/user.js';
-import { hashPassword } from '@/server/auth/password.js';
+import { checkUsernameAvailability, createUser } from '@/server/db/user';
+import { hashPassword } from '@/server/auth/password';
 import {
 	createSession,
 	generateSessionToken,
@@ -13,6 +13,13 @@ import {
 import { redirect } from 'sveltekit-flash-message/server';
 import { createEmailVerificationRequest } from '@/server/db/email-verification';
 import { sendVerificationEmail } from '@/server/mail';
+import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
+import { formatTime } from '@/utils/format';
+
+const limiter = new RetryAfterRateLimiter({
+	IP: [5, '15m'],
+	IPUA: [3, 'm']
+});
 
 export const load = async (event) => {
 	return {
@@ -23,6 +30,19 @@ export const load = async (event) => {
 
 export const actions = {
 	default: async (event) => {
+		const status = await limiter.check(event);
+		if (status.limited) {
+			const time = formatTime(status.retryAfter);
+			redirect(
+				{
+					type: 'error',
+					message: `Too many requests.`,
+					description: `Please try again after ${time}.`
+				},
+				event
+			);
+		}
+
 		const form = await superValidate(event, zod(signUpSchema));
 
 		if (!form.valid) {

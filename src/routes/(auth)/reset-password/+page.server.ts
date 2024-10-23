@@ -7,11 +7,18 @@ import {
 	validatePasswordResetSessionRequest
 } from '@/server/auth';
 import { hashPassword } from '@/server/auth/password';
-import { invalidateUserPasswordResetSessions } from '@/server/db/password-reset.js';
+import { invalidateUserPasswordResetSessions } from '@/server/db/password-reset';
 import { invalidateUserSessions, updateUserPassword } from '@/server/db/user';
+import { formatTime } from '@/utils/format';
 import { redirect } from 'sveltekit-flash-message/server';
+import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import { fail, setMessage, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
+
+const limiter = new RetryAfterRateLimiter({
+	IP: [10, '15m'],
+	IPUA: [6, 'm']
+});
 
 export const load = async (event) => {
 	const { session } = await validatePasswordResetSessionRequest(event);
@@ -25,6 +32,19 @@ export const load = async (event) => {
 
 export const actions = {
 	default: async (event) => {
+		const status = await limiter.check(event);
+		if (status.limited) {
+			const time = formatTime(status.retryAfter);
+			redirect(
+				{
+					type: 'error',
+					message: `Too many requests.`,
+					description: `Please try again after ${time}.`
+				},
+				event
+			);
+		}
+
 		const form = await superValidate(event, zod(resetPasswordSchema));
 
 		if (!form.valid) {

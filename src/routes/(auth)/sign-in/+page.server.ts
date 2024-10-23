@@ -5,6 +5,13 @@ import { prisma } from '@/server/db';
 import { redirect } from 'sveltekit-flash-message/server';
 import { fail, setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
+import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
+import { formatTime } from '@/utils/format';
+
+const limiter = new RetryAfterRateLimiter({
+	IP: [5, '15m'],
+	IPUA: [3, 'm']
+});
 
 export const load = async () => {
 	return {
@@ -14,6 +21,19 @@ export const load = async () => {
 
 export const actions = {
 	default: async (event) => {
+		const status = await limiter.check(event);
+		if (status.limited) {
+			const time = formatTime(status.retryAfter);
+			redirect(
+				{
+					type: 'error',
+					message: `Too many requests.`,
+					description: `Please try again after ${time}.`
+				},
+				event
+			);
+		}
+
 		const form = await superValidate(event, zod(signInUsernameSchema));
 
 		if (!form.valid) {

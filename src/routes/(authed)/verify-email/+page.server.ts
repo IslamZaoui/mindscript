@@ -11,10 +11,22 @@ import {
 } from '@/server/db/email-verification';
 import { invalidateUserPasswordResetSessions } from '@/server/db/password-reset';
 import { sendVerificationEmail } from '@/server/mail';
+import { formatTime } from '@/utils/format';
 import { error } from '@sveltejs/kit';
 import { redirect } from 'sveltekit-flash-message/server';
+import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import { fail, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
+
+const validateLimiter = new RetryAfterRateLimiter({
+	IP: [5, '15m'],
+	IPUA: [3, 'm']
+});
+
+const resendLimiter = new RetryAfterRateLimiter({
+	IP: [3, 'h'],
+	IPUA: [1, 'm']
+});
 
 export const load = async (event) => {
 	if (event.locals.session === null || event.locals.user === null) {
@@ -39,6 +51,19 @@ export const load = async (event) => {
 
 export const actions = {
 	resend: async (event) => {
+		const status = await resendLimiter.check(event);
+		if (status.limited) {
+			const time = formatTime(status.retryAfter);
+			redirect(
+				{
+					type: 'error',
+					message: `Too many requests.`,
+					description: `Please try again after ${time}.`
+				},
+				event
+			);
+		}
+
 		if (event.locals.session === null || event.locals.user === null) {
 			return error(401, 'Unauthorized');
 		}
@@ -60,6 +85,19 @@ export const actions = {
 	},
 
 	verifyEmail: async (event) => {
+		const status = await validateLimiter.check(event);
+		if (status.limited) {
+			const time = formatTime(status.retryAfter);
+			redirect(
+				{
+					type: 'error',
+					message: `Too many requests.`,
+					description: `Please try again after ${time}.`
+				},
+				event
+			);
+		}
+
 		if (event.locals.session === null || event.locals.user === null) {
 			redirect('/', { type: 'error', message: 'Unauthorized' }, event);
 		}
