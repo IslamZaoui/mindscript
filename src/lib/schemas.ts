@@ -4,8 +4,8 @@ import zxcvbn from 'zxcvbn';
 const passwordSchema = z
 	.string({ required_error: 'Password is required' })
 	.min(8, { message: 'Password must be at least 8 characters' })
-	.max(64, { message: 'Password must be at most 64 characters' })
-	.refine((password) => zxcvbn(password).score >= 2, {
+	.max(40, { message: 'Password must be at most 40 characters' })
+	.refine((password) => zxcvbn(password).score >= 3, {
 		message: 'Password is too weak'
 	});
 
@@ -13,7 +13,9 @@ const usernameSchema = z
 	.string({ required_error: 'Username is required' })
 	.min(5, { message: 'Username must be at least 5 characters' })
 	.max(16, { message: 'Username must be at most 16 characters' })
-	.regex(/^[a-zA-Z0-9]+$/, { message: 'Username can only contain letters and numbers' })
+	.regex(/^[a-zA-Z0-9._]+$/, {
+		message: 'Username can only contain letters numbers, dots, and underscores'
+	})
 	.trim();
 
 const emailSchema = z
@@ -23,8 +25,7 @@ const emailSchema = z
 
 const codeSchema = z
 	.string({ required_error: 'Code is required' })
-	.min(8, { message: 'Code must be at least 6 characters' })
-	.max(8, { message: 'Code must be at most 6 characters' })
+	.length(8, { message: 'Code must be 8 characters' })
 	.trim();
 
 export const signUpSchema = z

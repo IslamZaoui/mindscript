@@ -51,32 +51,34 @@
 		</Form.Control>
 		<Form.FieldErrors class="text-[12px]" />
 	</Form.Field>
-	<Form.Field {form} name="password">
-		<Form.Control let:attrs>
-			<Form.Label>Password</Form.Label>
-			<Input
-				autocomplete="new-password"
-				placeholder="password..."
-				type="password"
-				{...attrs}
-				bind:value={$formData.password}
-			/>
-		</Form.Control>
-		<Form.FieldErrors class="text-[12px]" />
-	</Form.Field>
-	<Form.Field {form} name="confirmPassword">
-		<Form.Control let:attrs>
-			<Form.Label>Confirm Password</Form.Label>
-			<Input
-				autocomplete="new-password"
-				placeholder="confirm password..."
-				type="password"
-				{...attrs}
-				bind:value={$formData.confirmPassword}
-			/>
-		</Form.Control>
-		<Form.FieldErrors class="text-[12px]" />
-	</Form.Field>
+	<div class="flex gap-2">
+		<Form.Field {form} class="flex-1" name="password">
+			<Form.Control let:attrs>
+				<Form.Label>Password</Form.Label>
+				<Input
+					autocomplete="new-password"
+					placeholder="password..."
+					type="password"
+					{...attrs}
+					bind:value={$formData.password}
+				/>
+			</Form.Control>
+			<Form.FieldErrors class="text-[12px]" />
+		</Form.Field>
+		<Form.Field {form} class="flex-1" name="confirmPassword">
+			<Form.Control let:attrs>
+				<Form.Label>Confirm Password</Form.Label>
+				<Input
+					autocomplete="new-password"
+					placeholder="confirm password..."
+					type="password"
+					{...attrs}
+					bind:value={$formData.confirmPassword}
+				/>
+			</Form.Control>
+			<Form.FieldErrors class="text-[12px]" />
+		</Form.Field>
+	</div>
 	<Form.Field {form} name="tos">
 		<Form.Control let:attrs>
 			<div class="flex flex-row items-center space-x-3 space-y-0">
