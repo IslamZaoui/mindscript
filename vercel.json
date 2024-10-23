@@ -1,0 +1,4 @@
+{
+	"$schema": "https://openapi.vercel.sh/vercel.json",
+	"buildCommand": "bunx prisma migrate deploy && bunx prisma generate && bun run build"
+}

@@ -5,9 +5,6 @@ import {
 } from '@/server/auth';
 import { redirect, type Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
-import { validateEnv } from '@/server/env';
-
-await validateEnv();
 
 const authHandle: Handle = async ({ event, resolve }) => {
 	const token = event.cookies.get('session') ?? null;

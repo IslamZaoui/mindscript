@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/private';
+import { RESEND_API_KEY } from '$env/static/private';
 import { emailVerificationTemplate, resetPasswordTemplate } from './templates';
 
 const siteEmail = 'mindscript@islamzaoui.top';
@@ -15,7 +15,7 @@ async function sendEmail(data: MailData): Promise<void> {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
-			Authorization: `Bearer ${env.RESEND_API_KEY}`
+			Authorization: `Bearer ${RESEND_API_KEY}`
 		},
 		body: JSON.stringify(data)
 	});
