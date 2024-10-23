@@ -18,7 +18,13 @@
 	<Form.Field {form} name="code">
 		<Form.Control let:attrs>
 			<Form.Label>Verification Code</Form.Label>
-			<Input placeholder="code..." type="text" {...attrs} bind:value={$formData.code} />
+			<Input
+				placeholder="code..."
+				type="text"
+				autocomplete="one-time-code"
+				{...attrs}
+				bind:value={$formData.code}
+			/>
 		</Form.Control>
 		<Form.FieldErrors class="text-[12px]" />
 	</Form.Field>

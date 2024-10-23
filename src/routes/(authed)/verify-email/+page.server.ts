@@ -61,7 +61,7 @@ export const actions = {
 
 	verifyEmail: async (event) => {
 		if (event.locals.session === null || event.locals.user === null) {
-			return error(401, 'Unauthorized');
+			redirect('/', { type: 'error', message: 'Unauthorized' }, event);
 		}
 
 		const form = await superValidate(event, zod(emailVerificationCodeSchema));
@@ -73,7 +73,7 @@ export const actions = {
 		let verificationRequest = await getUserEmailVerificationRequestFromRequest(event);
 
 		if (verificationRequest === null) {
-			return fail(400, { message: 'Unauthorized' });
+			redirect('/dahsboard', { type: 'error', message: 'Unauthorized' }, event);
 		}
 
 		if (Date.now() >= verificationRequest.expiresAt.getTime()) {
@@ -82,14 +82,19 @@ export const actions = {
 				verificationRequest.email
 			);
 			sendVerificationEmail(verificationRequest.email, verificationRequest.code);
-			return fail(400, {
-				message: 'Verification code expired. Please request a new code.'
-			});
+			redirect(
+				{ type: 'info', message: 'Verification code expired. Please request a new code.' },
+				event
+			);
 		}
 		if (verificationRequest.code !== form.data.code) {
-			return fail(400, {
-				message: 'Invalid verification code'
-			});
+			redirect(
+				{
+					type: 'error',
+					message: 'Invalid verification code'
+				},
+				event
+			);
 		}
 		await deleteUserEmailVerificationRequest(event.locals.user.id);
 		await invalidateUserPasswordResetSessions(event.locals.user.id);

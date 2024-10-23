@@ -8,11 +8,14 @@
 	import { Checkbox } from '@/components/ui/checkbox';
 
 	export let data: SuperValidated<Infer<typeof signUpSchema>>;
+	export let email: string | undefined = undefined;
 
 	const form = superForm(data, {
 		validators: zod(signUpSchema)
 	});
 	const { form: formData, enhance, delayed } = form;
+
+	$: if (email) $formData.email = email;
 </script>
 
 <form method="post" use:enhance class="space-y-6">

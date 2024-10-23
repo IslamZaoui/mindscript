@@ -33,13 +33,15 @@ const protectRoutesHandle: Handle = async ({ event, resolve }) => {
 	const { user, session } = event.locals;
 
 	const protectedRoutes = ['/dashboard'];
-	const publicRoutes = ['/', '/sign-in', '/sign-up', '/forgot-password'];
+	const publicRoutes = ['/', '/sign-in', '/sign-up', '/forgot-password', '/reset-password'];
 	const emailVerificationRoute = '/verify-email';
 
 	const isAuthenticated = user && session;
 	const isEmailVerified = user?.emailVerified;
 
 	const currentPath = event.url.pathname;
+
+	if (currentPath.startsWith('/api')) return resolve(event);
 
 	if (protectedRoutes.includes(currentPath)) {
 		if (!isAuthenticated) {
@@ -61,9 +63,7 @@ const protectRoutesHandle: Handle = async ({ event, resolve }) => {
 		}
 	}
 
-	if (publicRoutes.includes(currentPath) && isAuthenticated) {
-		throw redirect(302, '/dashboard');
-	}
+	if (publicRoutes.includes(currentPath) && isAuthenticated) throw redirect(302, '/dashboard');
 
 	return resolve(event);
 };

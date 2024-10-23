@@ -18,23 +18,36 @@
 	<Form.Field {form} name="code">
 		<Form.Control let:attrs>
 			<Form.Label>Password Reset Code</Form.Label>
-			<Input placeholder="code..." type="text" {...attrs} bind:value={$formData.code} />
+			<Input
+				placeholder="code..."
+				autocomplete="one-time-code"
+				type="text"
+				{...attrs}
+				bind:value={$formData.code}
+			/>
 		</Form.Control>
 		<Form.FieldErrors class="text-[12px]" />
 	</Form.Field>
 	<Form.Field {form} name="password">
 		<Form.Control let:attrs>
-			<Form.Label>Password</Form.Label>
-			<Input placeholder="password..." type="password" {...attrs} bind:value={$formData.password} />
+			<Form.Label>New Password</Form.Label>
+			<Input
+				placeholder="new password..."
+				type="password"
+				autocomplete="new-password"
+				{...attrs}
+				bind:value={$formData.password}
+			/>
 		</Form.Control>
 		<Form.FieldErrors class="text-[12px]" />
 	</Form.Field>
 	<Form.Field {form} name="confirmPassword">
 		<Form.Control let:attrs>
-			<Form.Label>Confirm Password</Form.Label>
+			<Form.Label>Confirm New Password</Form.Label>
 			<Input
-				placeholder="confirm password..."
+				placeholder="confirm new password..."
 				type="password"
+				autocomplete="new-password"
 				{...attrs}
 				bind:value={$formData.confirmPassword}
 			/>

@@ -18,7 +18,7 @@
 	<Form.Field {form} name="email">
 		<Form.Control let:attrs>
 			<Form.Label>Your email</Form.Label>
-			<Input placeholder="email..." type="text" {...attrs} bind:value={$formData.email} />
+			<Input placeholder="email..." type="email" {...attrs} bind:value={$formData.email} />
 		</Form.Control>
 		<Form.FieldErrors class="text-[12px]" />
 	</Form.Field>

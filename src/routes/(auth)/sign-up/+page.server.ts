@@ -14,9 +14,10 @@ import { redirect } from 'sveltekit-flash-message/server';
 import { createEmailVerificationRequest } from '@/server/db/email-verification';
 import { sendVerificationEmail } from '@/server/mail';
 
-export const load = async () => {
+export const load = async (event) => {
 	return {
-		form: await superValidate(zod(signUpSchema))
+		form: await superValidate(zod(signUpSchema)),
+		email: event.cookies.get('sign-up-email')
 	};
 };
 

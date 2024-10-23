@@ -3,7 +3,7 @@
 	import Feather from 'lucide-svelte/icons/feather';
 	import Github from 'lucide-svelte/icons/github';
 	import { Button } from '@/components/ui/button';
-	
+
 	export let data;
 </script>
 
@@ -15,7 +15,7 @@
 			<p class="text-muted-foreground">Start your writing journey with MindScript</p>
 		</div>
 
-		<SignUpForm data={data.form} />
+		<SignUpForm data={data.form} email={data.email} />
 
 		<div class="my-4 flex items-center justify-center">
 			<div class="w-full border-t border-muted-foreground"></div>

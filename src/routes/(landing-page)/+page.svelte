@@ -4,6 +4,8 @@
 	import Edit from 'lucide-svelte/icons/square-pen';
 	import Users from 'lucide-svelte/icons/users';
 	import TrendingUp from 'lucide-svelte/icons/trending-up';
+	import { Input } from '@/components/ui/input';
+	import { enhance } from '$app/forms';
 </script>
 
 <section class="w-full bg-background py-12 md:py-24 lg:py-32 xl:py-48">
@@ -81,7 +83,10 @@
 				</p>
 			</div>
 			<div class="w-full max-w-sm space-y-2">
-				<Button href="/sign-up" class="w-full">Get Started</Button>
+				<form class="flex space-x-2" method="post" use:enhance>
+					<Input class="max-w-lg flex-1" placeholder="Enter your email" name="email" type="email" />
+					<Button type="submit">Sign Up</Button>
+				</form>
 				<p class="text-xs text-muted-foreground">
 					By signing up, you agree to our{' '}
 					<a class="underline underline-offset-2 hover:text-primary" href="##">

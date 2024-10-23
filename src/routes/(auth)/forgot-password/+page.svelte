@@ -2,7 +2,7 @@
 	import ForgotPasswordForm from '@/components/forms/forgot-password-form.svelte';
 	import Feather from 'lucide-svelte/icons/feather';
 
-    export let data;
+	export let data;
 </script>
 
 <div class="container mx-auto flex min-h-screen flex-col items-center justify-center p-4">
@@ -13,7 +13,7 @@
 			<p class="text-muted-foreground">No worries, we'll send you reset instructions.</p>
 		</div>
 
-        <ForgotPasswordForm data={data.form} />
+		<ForgotPasswordForm data={data.form} />
 
 		<div class="text-center">
 			<a href="/sign-in" class="text-sm text-primary hover:underline"> Back to Sign In </a>

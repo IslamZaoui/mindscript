@@ -9,7 +9,9 @@
 			<span class="font-bold text-primary">MindScript</span>
 		</a>
 		<nav class="ml-auto flex gap-4 sm:gap-6">
-			<a class="text-sm font-medium text-muted-foreground hover:text-primary" href="/sign-in"> Sign In </a>
+			<a class="text-sm font-medium text-muted-foreground hover:text-primary" href="/sign-in">
+				Sign In
+			</a>
 		</nav>
 	</header>
 
