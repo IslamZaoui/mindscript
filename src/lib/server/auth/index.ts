@@ -41,12 +41,8 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 		},
 		include: {
 			user: {
-				select: {
-					id: true,
-					email: true,
-					emailVerified: true,
-					username: true,
-					githubId: true
+				omit: {
+					hashedPassword: true
 				}
 			}
 		}

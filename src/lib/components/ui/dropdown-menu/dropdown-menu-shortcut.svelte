@@ -2,12 +2,12 @@
 	import type { HTMLAttributes } from "svelte/elements";
 	import { cn } from "@/utils/shadcn.js";
 
-	type $$Props = HTMLAttributes<HTMLDivElement>;
+	type $$Props = HTMLAttributes<HTMLSpanElement>;
 
 	let className: $$Props["class"] = undefined;
 	export { className as class };
 </script>
 
-<div class={cn("text-sm [&_p]:leading-relaxed", className)} {...$$restProps}>
+<span class={cn("ml-auto text-xs tracking-widest opacity-60", className)} {...$$restProps}>
 	<slot />
-</div>
+</span>

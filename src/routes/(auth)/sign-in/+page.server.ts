@@ -61,7 +61,7 @@ export const actions = {
 		setSessionTokenCookie(event, sessionToken, session.expiresAt);
 
 		redirect(
-			'/dashboard',
+			`/${user.username}`,
 			{
 				type: 'success',
 				message: 'Sign in successful',

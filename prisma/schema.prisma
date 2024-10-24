@@ -4,19 +4,27 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "omitApi"]
 }
 
 model User {
-  id                       String                     @id @default(nanoid(16))
-  username                 String                     @unique
-  email                    String                     @unique
-  emailVerified            Boolean                    @default(false)
-  hashedPassword           String?
-  githubId                 Int?
+  id             String   @id @default(nanoid(16))
+  username       String   @unique
+  email          String   @unique
+  githubId       Int?     @unique
+  emailVerified  Boolean  @default(false)
+  hashedPassword String?
+  bio            String?
+  location       String?
+  website        String?
+  image          String?
+  createdAt      DateTime @default(now())
+
   sessions                 Session[]
   EmailVerificationRequest EmailVerificationRequest[]
   PasswordResetSession     PasswordResetSession[]
+  Post                     Post[]
 }
 
 model Session {
@@ -45,4 +53,32 @@ model PasswordResetSession {
   code      String
 
   user User @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model Post {
+  id          String   @id @default(nanoid(16))
+  title       String
+  description String
+  content     String
+  tags        String[]
+  published   Boolean  @default(false)
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(references: [id], fields: [userId], onDelete: Cascade)
+
+  Analytics Analytics?
+}
+
+model Analytics {
+  id        String   @id @default(nanoid(16))
+  postId    String   @unique
+  views     Int      @default(0)
+  likes     Int      @default(0)
+  shares    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  post Post @relation(references: [id], fields: [postId], onDelete: Cascade)
 }

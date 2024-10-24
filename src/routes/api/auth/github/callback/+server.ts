@@ -62,13 +62,14 @@ export async function GET(event: RequestEvent): Promise<Response> {
 		const sessionToken = generateSessionToken();
 		const session = await createSession(sessionToken, existingUser.id);
 		setSessionTokenCookie(event, sessionToken, session.expiresAt);
-		redirect(302, '/dashboard');
+		redirect(302, `/${existingUser.username}`);
 	}
 
 	const user = await createUser({
 		username: githubUsername,
 		email: githubEmail,
-		githubId: githubUserId
+		githubId: githubUserId,
+		emailVerified: true
 	});
 
 	const sessionToken = generateSessionToken();
@@ -76,8 +77,8 @@ export async function GET(event: RequestEvent): Promise<Response> {
 	setSessionTokenCookie(event, sessionToken, session.expiresAt);
 
 	redirect(
-		'/verify-email',
-		{ type: 'success', message: 'Signed up successfully', description: 'Please verify your email' },
+		`/${user.username}`,
+		{ type: 'success', message: 'Signed up successfully', description: 'welcome to MindScript' },
 		event
 	);
 }

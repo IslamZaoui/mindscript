@@ -29,7 +29,7 @@ const authHandle: Handle = async ({ event, resolve }) => {
 const protectRoutesHandle: Handle = async ({ event, resolve }) => {
 	const { user, session } = event.locals;
 
-	const protectedRoutes = ['/dashboard'];
+	const protectedRoutes: string[] = [];
 	const publicRoutes = ['/', '/sign-in', '/sign-up', '/forgot-password', '/reset-password'];
 	const emailVerificationRoute = '/verify-email';
 
@@ -42,25 +42,25 @@ const protectRoutesHandle: Handle = async ({ event, resolve }) => {
 
 	if (protectedRoutes.includes(currentPath)) {
 		if (!isAuthenticated) {
-			throw redirect(302, '/sign-in');
+			redirect(302, '/sign-in');
 		}
 
 		if (!isEmailVerified) {
-			throw redirect(302, '/verify-email');
+			redirect(302, '/verify-email');
 		}
 	}
 
 	if (currentPath === emailVerificationRoute) {
 		if (!isAuthenticated) {
-			throw redirect(302, '/sign-in');
+			redirect(302, '/sign-in');
 		}
 
 		if (isEmailVerified) {
-			throw redirect(302, '/dashboard');
+			redirect(302, `/${user.username}`);
 		}
 	}
 
-	if (publicRoutes.includes(currentPath) && isAuthenticated) throw redirect(302, '/dashboard');
+	if (publicRoutes.includes(currentPath) && isAuthenticated) redirect(302, `/${user.username}`);
 
 	return resolve(event);
 };

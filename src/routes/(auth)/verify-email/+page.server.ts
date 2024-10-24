@@ -140,7 +140,7 @@ export const actions = {
 		deleteEmailVerificationRequestCookie(event);
 
 		redirect(
-			'/dashboard',
+			`/${event.locals.user.username}`,
 			{
 				type: 'success',
 				message: 'Email verified',
