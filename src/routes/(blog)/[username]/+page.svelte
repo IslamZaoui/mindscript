@@ -1,16 +1,13 @@
 <script>
-	import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+	import * as Avatar from '@/components/ui/avatar';
 	import { Badge } from '@/components/ui/badge';
 	import { Button } from '@/components/ui/button';
-	import {
-		Card,
-		CardContent,
-		CardDescription,
-		CardFooter,
-		CardHeader,
-		CardTitle
-	} from '@/components/ui/card';
-	import { Mail, MapPin, Calendar, Settings, Globe } from 'lucide-svelte';
+	import * as Card from '@/components/ui/card';
+	import Mail from 'lucide-svelte/icons/mail';
+	import MapPin from 'lucide-svelte/icons/map-pin';
+	import Calendar from 'lucide-svelte/icons/calendar';
+	import Settings from 'lucide-svelte/icons/settings';
+	import Globe from 'lucide-svelte/icons/globe';
 
 	let { data } = $props();
 	let user = $derived(data.userProfile);
@@ -19,27 +16,27 @@
 <div class="container mx-auto px-4 py-8">
 	<div class="flex flex-col gap-8 md:flex-row">
 		<aside class="w-full md:w-1/4">
-			<Card>
-				<CardHeader>
+			<Card.Root>
+				<Card.Header>
 					<div class="flex items-center space-x-4">
-						<Avatar class="h-20 w-20">
-							<AvatarImage src={user.image} alt={user.username} />
-							<AvatarFallback>{user.username[0]}</AvatarFallback>
-						</Avatar>
-						<div>
-							<CardTitle>
-                                {user.username}
-                                {#if user.id === data.user?.id}
-                                    <Badge variant="secondary">You</Badge>
-                                {/if}
-                            </CardTitle>
+						<Avatar.Root class="h-20 w-20">
+							<Avatar.Image src={user.image} alt={user.username} />
+							<Avatar.Fallback>{user.username[0]}</Avatar.Fallback>
+						</Avatar.Root>
+						<div class="flex-1 space-y-1">
+							<Card.Title>
+								{user.username}
+								{#if user.id === data.user?.id}
+									<Badge class="ml-1 " variant="secondary">You</Badge>
+								{/if}
+							</Card.Title>
 							{#if user.bio}
-								<CardDescription>{user.bio}</CardDescription>
+								<Card.Description>{user.bio}</Card.Description>
 							{/if}
 						</div>
 					</div>
-				</CardHeader>
-				<CardContent>
+				</Card.Header>
+				<Card.Content>
 					<div class="space-y-4">
 						<div class="flex items-center">
 							<Mail class="mr-2 h-4 w-4" />
@@ -62,37 +59,37 @@
 							<span>Joined {user.createdAt.toDateString()}</span>
 						</div>
 					</div>
-				</CardContent>
-				<CardFooter class="flex justify-between">
+				</Card.Content>
+				<Card.Footer class="flex justify-between">
 					{#if user.id == data.user?.id}
-						<Button variant="outline" class="w-full">
+						<Button href="/settings#profile" variant="outline" class="w-full">
 							<Settings class="mr-2 h-4 w-4" />
 							Edit Profile
 						</Button>
 					{/if}
-				</CardFooter>
-			</Card>
+				</Card.Footer>
+			</Card.Root>
 		</aside>
 
 		<main class="w-full md:w-3/4">
-			<h2 class="mb-6 text-2xl font-bold">My Blog Posts</h2>
+			<h2 class="mb-6 text-2xl font-bold">Posts</h2>
 			<div class="space-y-6">
 				{#await data.getUserPosts}
 					<p>Loading...</p>
 				{:then posts}
 					{#each posts as post}
-						<Card>
-							<CardHeader>
-								<CardTitle>{post.title}</CardTitle>
-								<CardDescription>{post.createdAt}</CardDescription>
-							</CardHeader>
-							<CardContent>
+						<Card.Root>
+							<Card.Header>
+								<Card.Title>{post.title}</Card.Title>
+								<Card.Description>{post.createdAt}</Card.Description>
+							</Card.Header>
+							<Card.Content>
 								<p>{post.description}</p>
-							</CardContent>
-							<CardFooter>
+							</Card.Content>
+							<Card.Footer>
 								<Button variant="outline">Read More</Button>
-							</CardFooter>
-						</Card>
+							</Card.Footer>
+						</Card.Root>
 					{:else}
 						<p>No posts found.</p>
 					{/each}

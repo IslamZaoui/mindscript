@@ -12,7 +12,7 @@ export const load = async (event) => {
 
 	if (!userProfile) return error(404, 'User not found');
 
-    const page = Number(event.url.searchParams.get('page')) || 1;
+	const page = Number(event.url.searchParams.get('page')) || 1;
 
 	const getUserPosts = async (page: number) => {
 		return await prisma.post.findMany({

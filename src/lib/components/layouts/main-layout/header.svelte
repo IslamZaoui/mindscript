@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { User } from '@/server/auth';
-	import { Feather } from 'lucide-svelte';
+	import Feather from 'lucide-svelte/icons/feather';
 	import UserMenu from './user-menu.svelte';
 
 	interface Props {

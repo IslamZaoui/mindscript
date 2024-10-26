@@ -29,34 +29,35 @@ const authHandle: Handle = async ({ event, resolve }) => {
 const protectRoutesHandle: Handle = async ({ event, resolve }) => {
 	const { user, session } = event.locals;
 
-	const protectedRoutes: string[] = [];
+	const protectedRoutes = ['/settings'];
 	const publicRoutes = ['/', '/sign-in', '/sign-up', '/forgot-password', '/reset-password'];
 	const emailVerificationRoute = '/verify-email';
 
 	const isAuthenticated = user && session;
-	const isEmailVerified = user?.emailVerified;
+	const isEmailVerified = user?.emailVerified ?? false;
 
 	const currentPath = event.url.pathname;
 
 	if (currentPath.startsWith('/api')) return resolve(event);
 
+	if (
+		isAuthenticated &&
+		!isEmailVerified &&
+		currentPath !== emailVerificationRoute &&
+		currentPath !== '/sign-out'
+	) {
+		redirect(302, '/verify-email');
+	}
+
 	if (protectedRoutes.includes(currentPath)) {
 		if (!isAuthenticated) {
 			redirect(302, '/sign-in');
-		}
-
-		if (!isEmailVerified) {
-			redirect(302, '/verify-email');
 		}
 	}
 
 	if (currentPath === emailVerificationRoute) {
 		if (!isAuthenticated) {
 			redirect(302, '/sign-in');
-		}
-
-		if (isEmailVerified) {
-			redirect(302, `/${user.username}`);
 		}
 	}
 

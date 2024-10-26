@@ -70,6 +70,10 @@ export const actions = {
 		setSessionTokenCookie(event, sessionToken, session.expiresAt);
 		deletePasswordResetSessionTokenCookie(event);
 
-		redirect(`/${user.username}`, { type: 'success', message: 'Password reset successfully' }, event);
+		redirect(
+			`/${user.username}`,
+			{ type: 'success', message: 'Password reset successfully' },
+			event
+		);
 	}
 };

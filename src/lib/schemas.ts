@@ -75,3 +75,16 @@ export const resetPasswordSchema = z
 			});
 		}
 	});
+
+export const updateUserImageSchema = z.object({
+	image: z.union([z.string().url({ message: 'Must be a valid URL' }), z.string().max(0)]).optional()
+});
+
+export const updateUserInfoSchema = z.object({
+	username: usernameSchema,
+	bio: z.string().max(50, { message: 'Bio must be at most 50 characters' }).optional(),
+	location: z.string().max(50, { message: 'Location must be at most 50 characters' }).optional(),
+	website: z
+		.union([z.string().url({ message: 'Must be a valid URL' }), z.string().max(0)])
+		.optional()
+});
