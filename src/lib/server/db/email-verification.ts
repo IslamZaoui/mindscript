@@ -25,7 +25,7 @@ export async function createEmailVerificationRequest(userId: string, email: stri
 }
 
 export async function getUserEmailVerificationRequestFromRequest(event: RequestEvent) {
-	if (event.locals.user === null) {
+	if (event.locals.auth.user === null) {
 		return null;
 	}
 	const id = event.cookies.get('email_verification') ?? null;

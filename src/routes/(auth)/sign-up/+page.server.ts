@@ -22,9 +22,19 @@ const limiter = new RetryAfterRateLimiter({
 });
 
 export const load = async (event) => {
+	const { isAuthenticated, user } = event.locals.auth;
+	if (isAuthenticated) redirect(302, `/${user.username}`);
+
 	return {
-		form: await superValidate(zod(signUpSchema)),
-		email: event.cookies.get('sign-up-email')
+		form: await superValidate(event, zod(signUpSchema), {
+			defaults: {
+				email: event.cookies.get('sign-up-email') ?? '',
+				username: '',
+				password: '',
+				confirmPassword: '',
+				tos: false
+			}
+		})
 	};
 };
 

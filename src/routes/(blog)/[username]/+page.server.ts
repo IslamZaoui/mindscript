@@ -1,7 +1,13 @@
 import { prisma } from '@/server/db';
 import { error } from '@sveltejs/kit';
+import { redirect } from 'sveltekit-flash-message/server';
 
 export const load = async (event) => {
+	const { user, isAuthenticated } = event.locals.auth;
+
+	if (isAuthenticated && !user.emailVerified)
+		redirect('/verify-email', { type: 'error', message: 'Email not verified' }, event);
+
 	const { username } = event.params;
 	const userProfile = await prisma.user.findUnique({
 		where: { username },

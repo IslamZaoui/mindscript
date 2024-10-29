@@ -1,6 +1,13 @@
 import { dev } from '$app/environment';
 import { redirect } from '@sveltejs/kit';
 
+export const load = async (event) => {
+	const { isAuthenticated, user } = event.locals.auth;
+	if (isAuthenticated) redirect(302, `/${user.username}`);
+
+	return {};
+};
+
 export const actions = {
 	default: async (event) => {
 		const { email } = Object.fromEntries(await event.request.formData());
@@ -8,7 +15,6 @@ export const actions = {
 		event.cookies.set('sign-up-email', email.toString(), {
 			httpOnly: true,
 			path: '/',
-			expires: new Date(Date.now() + 1000 * 60 * 1), // 1 min
 			sameSite: 'lax',
 			secure: !dev
 		});

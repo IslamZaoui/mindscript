@@ -15,7 +15,7 @@
 			<p class="text-muted-foreground">Start your writing journey with MindScript</p>
 		</div>
 
-		<SignUpForm data={data.form} email={data.email} />
+		<SignUpForm data={data.form} />
 
 		<div class="my-4 flex items-center justify-center">
 			<div class="w-full border-t border-muted-foreground"></div>

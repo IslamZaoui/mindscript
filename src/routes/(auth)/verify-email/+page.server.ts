@@ -29,16 +29,15 @@ const resendLimiter = new RetryAfterRateLimiter({
 });
 
 export const load = async (event) => {
-	if (event.locals.session === null || event.locals.user === null) {
-		return error(401, 'Unauthorized');
-	}
+	const { isAuthenticated, user } = event.locals.auth;
+	if (!isAuthenticated) redirect(302, '/sign-in');
+
+	if (user.emailVerified)
+		redirect(302, '/');
 
 	let verificationRequest = await getUserEmailVerificationRequestFromRequest(event);
 	if (verificationRequest === null || Date.now() >= verificationRequest.expiresAt.getTime()) {
-		verificationRequest = await createEmailVerificationRequest(
-			event.locals.user.id,
-			event.locals.user.email
-		);
+		verificationRequest = await createEmailVerificationRequest(user.id, user.email);
 		await sendVerificationEmail(verificationRequest.email, verificationRequest.code);
 		setEmailVerificationRequestCookie(event, verificationRequest);
 	}
@@ -51,6 +50,8 @@ export const load = async (event) => {
 
 export const actions = {
 	resend: async (event) => {
+		const { isAuthenticated, user } = event.locals.auth;
+
 		const status = await resendLimiter.check(event);
 		if (status.limited) {
 			const time = formatTime(status.retryAfter);
@@ -64,14 +65,11 @@ export const actions = {
 			);
 		}
 
-		if (event.locals.session === null || event.locals.user === null) {
+		if (!isAuthenticated) {
 			return error(401, 'Unauthorized');
 		}
 
-		const verificationRequest = await createEmailVerificationRequest(
-			event.locals.user.id,
-			event.locals.user.email
-		);
+		const verificationRequest = await createEmailVerificationRequest(user.id, user.email);
 		await sendVerificationEmail(verificationRequest.email, verificationRequest.code);
 		setEmailVerificationRequestCookie(event, verificationRequest);
 
@@ -85,6 +83,8 @@ export const actions = {
 	},
 
 	verifyEmail: async (event) => {
+		const { isAuthenticated, user } = event.locals.auth;
+
 		const status = await validateLimiter.check(event);
 		if (status.limited) {
 			const time = formatTime(status.retryAfter);
@@ -98,7 +98,7 @@ export const actions = {
 			);
 		}
 
-		if (event.locals.session === null || event.locals.user === null) {
+		if (!isAuthenticated) {
 			redirect('/', { type: 'error', message: 'Unauthorized' }, event);
 		}
 
@@ -134,17 +134,17 @@ export const actions = {
 				event
 			);
 		}
-		await deleteUserEmailVerificationRequest(event.locals.user.id);
-		await invalidateUserPasswordResetSessions(event.locals.user.id);
-		await updateUserEmailAndSetEmailAsVerified(event.locals.user.id, verificationRequest.email);
+		await deleteUserEmailVerificationRequest(user.id);
+		await invalidateUserPasswordResetSessions(user.id);
+		await updateUserEmailAndSetEmailAsVerified(user.id, verificationRequest.email);
 		deleteEmailVerificationRequestCookie(event);
 
 		redirect(
-			`/${event.locals.user.username}`,
+			`/${user.username}`,
 			{
 				type: 'success',
 				message: 'Email verified',
-				description: `welcome ${event.locals.user.username}.`
+				description: `welcome ${user.username}.`
 			},
 			event
 		);

@@ -1,5 +1,8 @@
 import type { Session, User } from '@/server/auth';
 
+type Authed = { user: User; session: Session; isAuthenticated: true };
+type UnAuthed = { user: null; session: null; isAuthenticated: false };
+
 declare global {
 	type Flash = {
 		type: 'success' | 'error' | 'info' | 'warning';
@@ -11,8 +14,7 @@ declare global {
 			flash?: Flash;
 		}
 		interface Locals {
-			user: User | null;
-			session: Session | null;
+			auth: Authed | UnAuthed;
 		}
 	}
 }

@@ -9,19 +9,14 @@
 
 	interface Props {
 		data: SuperValidated<Infer<typeof signUpSchema>>;
-		email: string | undefined;
 	}
 
-	let { data, email }: Props = $props();
+	let { data }: Props = $props();
 
 	const form = superForm(data, {
 		validators: zod(signUpSchema)
 	});
 	const { form: formData, enhance, delayed } = form;
-
-	$effect(() => {
-		if (email) $formData.email = email;
-	});
 </script>
 
 <form method="post" use:enhance class="space-y-6">

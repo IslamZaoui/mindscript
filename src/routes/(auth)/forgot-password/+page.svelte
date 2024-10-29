@@ -16,7 +16,12 @@
 		<ForgotPasswordForm data={data.form} />
 
 		<div class="text-center">
-			<a href="/sign-in" class="text-sm text-primary hover:underline"> Back to Sign In </a>
+			<a
+				href={!data.user ? '/sign-in' : `/${data.user.username}`}
+				class="text-sm text-primary hover:underline"
+			>
+				{!data.user ? 'Back to Sign In' : 'Back to Profile'}
+			</a>
 		</div>
 	</div>
 </div>

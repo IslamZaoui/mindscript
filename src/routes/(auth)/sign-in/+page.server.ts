@@ -13,7 +13,10 @@ const limiter = new RetryAfterRateLimiter({
 	IPUA: [3, 'm']
 });
 
-export const load = async () => {
+export const load = async (event) => {
+	const { isAuthenticated, user } = event.locals.auth;
+	if (isAuthenticated) redirect(302, `/${user.username}`);
+
 	return {
 		form: await superValidate(zod(signInUsernameSchema))
 	};

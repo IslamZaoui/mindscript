@@ -17,9 +17,16 @@ const limiter = new RetryAfterRateLimiter({
 	IPUA: [3, 'm']
 });
 
-export const load = async () => {
+export const load = async (event) => {
+	const { user } = event.locals.auth;
+	
 	return {
-		form: await superValidate(zod(forgotPasswordSchema))
+		form: await superValidate(event, zod(forgotPasswordSchema), {
+			defaults: {
+				email: user?.email ?? ''
+			}
+		}),
+		user
 	};
 };
 

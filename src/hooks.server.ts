@@ -3,14 +3,16 @@ import {
 	setSessionTokenCookie,
 	deleteSessionTokenCookie
 } from '@/server/auth';
-import { redirect, type Handle } from '@sveltejs/kit';
-import { sequence } from '@sveltejs/kit/hooks';
+import { type Handle } from '@sveltejs/kit';
 
-const authHandle: Handle = async ({ event, resolve }) => {
+export const handle: Handle = async ({ event, resolve }) => {
 	const token = event.cookies.get('session') ?? null;
 	if (token === null) {
-		event.locals.user = null;
-		event.locals.session = null;
+		event.locals.auth = {
+			session: null,
+			user: null,
+			isAuthenticated: false
+		};
 		return resolve(event);
 	}
 
@@ -21,49 +23,18 @@ const authHandle: Handle = async ({ event, resolve }) => {
 		deleteSessionTokenCookie(event);
 	}
 
-	event.locals.session = session;
-	event.locals.user = user;
-	return resolve(event);
-};
-
-const protectRoutesHandle: Handle = async ({ event, resolve }) => {
-	const { user, session } = event.locals;
-
-	const protectedRoutes = ['/settings'];
-	const publicRoutes = ['/', '/sign-in', '/sign-up', '/forgot-password', '/reset-password'];
-	const emailVerificationRoute = '/verify-email';
-
-	const isAuthenticated = user && session;
-	const isEmailVerified = user?.emailVerified ?? false;
-
-	const currentPath = event.url.pathname;
-
-	if (currentPath.startsWith('/api')) return resolve(event);
-
-	if (
-		isAuthenticated &&
-		!isEmailVerified &&
-		currentPath !== emailVerificationRoute &&
-		currentPath !== '/sign-out'
-	) {
-		redirect(302, '/verify-email');
-	}
-
-	if (protectedRoutes.includes(currentPath)) {
-		if (!isAuthenticated) {
-			redirect(302, '/sign-in');
-		}
-	}
-
-	if (currentPath === emailVerificationRoute) {
-		if (!isAuthenticated) {
-			redirect(302, '/sign-in');
-		}
-	}
-
-	if (publicRoutes.includes(currentPath) && isAuthenticated) redirect(302, `/${user.username}`);
+	event.locals.auth =
+		user !== null && session !== null
+			? {
+					user,
+					session,
+					isAuthenticated: true
+				}
+			: {
+					user: null,
+					session: null,
+					isAuthenticated: false
+				};
 
 	return resolve(event);
 };
-
-export const handle = sequence(authHandle, protectRoutesHandle);
