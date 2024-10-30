@@ -19,9 +19,11 @@
 
 <form method="post" use:enhance class="space-y-2">
 	<Form.Field {form} name="email">
-		<Form.Control let:attrs>
-			<Form.Label>Your email</Form.Label>
-			<Input placeholder="email..." type="email" {...attrs} bind:value={$formData.email} />
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Your email</Form.Label>
+				<Input placeholder="email..." type="email" {...props} bind:value={$formData.email} />
+			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors class="text-[12px]" />
 	</Form.Field>

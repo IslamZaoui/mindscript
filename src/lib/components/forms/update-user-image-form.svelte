@@ -39,15 +39,17 @@
 		</Dialog.Header>
 		<form method="post" use:enhance action="?/updateUserImage" class="space-x-4">
 			<Form.Field class="flex-1" {form} name="image">
-				<Form.Control let:attrs>
-					<Form.Label>Image</Form.Label>
-					<div class="flex items-center gap-2">
-						<Input placeholder="image..." class="w-full" {...attrs} bind:value={$formData.image} />
-						<Button type="submit" disabled={$delayed}>
-							<Camera class="mr-2 h-4 w-4" />
-							{$delayed ? 'Updating...' : 'Update'}
-						</Button>
-					</div>
+				<Form.Control>
+					{#snippet children({ props })}
+						<Form.Label>Image</Form.Label>
+						<div class="flex items-center gap-2">
+							<Input placeholder="image..." class="w-full" {...props} bind:value={$formData.image} />
+							<Button type="submit" disabled={$delayed}>
+								<Camera class="mr-2 h-4 w-4" />
+								{$delayed ? 'Updating...' : 'Update'}
+							</Button>
+						</div>
+					{/snippet}
 				</Form.Control>
 				<Form.FieldErrors class="text-[12px]" />
 			</Form.Field>

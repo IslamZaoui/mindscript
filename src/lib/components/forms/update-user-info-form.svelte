@@ -24,36 +24,44 @@
 
 <form method="post" use:enhance action="?/updateUserInfo" class="space-y-2">
 	<Form.Field {form} name="username">
-		<Form.Control let:attrs>
-			<Form.Label>Username</Form.Label>
-			<Input
-				autocomplete="username"
-				placeholder="Username..."
-				type="text"
-				{...attrs}
-				bind:value={$formData.username}
-			/>
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Username</Form.Label>
+				<Input
+					autocomplete="username"
+					placeholder="Username..."
+					type="text"
+					{...props}
+					bind:value={$formData.username}
+				/>
+			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors class="text-[12px]" />
 	</Form.Field>
 	<Form.Field {form} name="bio">
-		<Form.Control let:attrs>
-			<Form.Label>Bio</Form.Label>
-			<Textarea placeholder="bio..." {...attrs} bind:value={$formData.bio} />
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Bio</Form.Label>
+				<Textarea placeholder="bio..." {...props} bind:value={$formData.bio} />
+			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors class="text-[12px]" />
 	</Form.Field>
 	<Form.Field {form} name="location">
-		<Form.Control let:attrs>
-			<Form.Label>Location</Form.Label>
-			<Input placeholder="location..." type="text" {...attrs} bind:value={$formData.location} />
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Location</Form.Label>
+				<Input placeholder="location..." type="text" {...props} bind:value={$formData.location} />
+			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors class="text-[12px]" />
 	</Form.Field>
 	<Form.Field {form} name="website">
-		<Form.Control let:attrs>
-			<Form.Label>Website</Form.Label>
-			<Input placeholder="website..." type="url" {...attrs} bind:value={$formData.website} />
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Website</Form.Label>
+				<Input placeholder="website..." type="url" {...props} bind:value={$formData.website} />
+			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors class="text-[12px]" />
 	</Form.Field>

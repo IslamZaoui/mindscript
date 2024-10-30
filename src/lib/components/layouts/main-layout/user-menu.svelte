@@ -2,6 +2,7 @@
 	import * as DropdownMenu from '@/components/ui/dropdown-menu';
 	import * as Avatar from '@/components/ui/avatar';
 	import type { User } from '@/server/auth';
+	import { goto } from '$app/navigation';
 
 	interface Props {
 		user: User;
@@ -24,12 +25,12 @@
 				<span class="text-xs text-muted-foreground">{user.email}</span>
 			</DropdownMenu.Label>
 			<DropdownMenu.Separator />
-			<DropdownMenu.Item href="/{user.username}">Profile</DropdownMenu.Item>
-			<DropdownMenu.Item href="/settings">Settings</DropdownMenu.Item>
+			<DropdownMenu.Item onclick={() => goto(`/${user.username}`)}>Profile</DropdownMenu.Item>
+			<DropdownMenu.Item onclick={() => goto('/settings')}>Settings</DropdownMenu.Item>
 			<DropdownMenu.Separator />
 			<DropdownMenu.LightSwitch />
 			<DropdownMenu.Separator />
-			<DropdownMenu.Item href="/sign-out">Sign out</DropdownMenu.Item>
+			<DropdownMenu.Item onclick={() => goto('/sign-out')}>Sign out</DropdownMenu.Item>
 		</DropdownMenu.Group>
 	</DropdownMenu.Content>
 </DropdownMenu.Root>

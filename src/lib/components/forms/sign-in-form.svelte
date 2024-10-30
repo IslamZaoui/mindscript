@@ -21,39 +21,45 @@
 
 <form method="post" use:enhance class="space-y-6">
 	<Form.Field {form} name="username">
-		<Form.Control let:attrs>
-			<Form.Label>Username</Form.Label>
-			<Input
-				autocomplete="username"
-				placeholder="Username..."
-				type="text"
-				{...attrs}
-				bind:value={$formData.username}
-			/>
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Username</Form.Label>
+				<Input
+					autocomplete="username"
+					placeholder="Username..."
+					type="text"
+					{...props}
+					bind:value={$formData.username}
+				/>
+			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors class="text-[12px]" />
 	</Form.Field>
 	<Form.Field {form} name="password">
-		<Form.Control let:attrs>
-			<Form.Label>Password</Form.Label>
-			<Input
-				autocomplete="current-password"
-				placeholder="password..."
-				type="password"
-				{...attrs}
-				bind:value={$formData.password}
-			/>
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Password</Form.Label>
+				<Input
+					autocomplete="current-password"
+					placeholder="password..."
+					type="password"
+					{...props}
+					bind:value={$formData.password}
+				/>
+			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors class="text-[12px]" />
 	</Form.Field>
 	<div class="flex items-start justify-between">
 		<Form.Field {form} name="rememberMe">
-			<Form.Control let:attrs>
-				<div class="flex flex-row items-center space-x-3 space-y-0">
-					<Checkbox bind:checked={$formData.rememberMe} />
-					<Form.Label class="flex items-center gap-[5px]">Remember Me</Form.Label>
-					<input type="hidden" name={attrs.name} value={$formData.rememberMe} hidden />
-				</div>
+			<Form.Control>
+				{#snippet children({ props })}
+					<div class="flex flex-row items-center space-x-3 space-y-0">
+						<Checkbox bind:checked={$formData.rememberMe} />
+						<Form.Label class="flex items-center gap-[5px]">Remember Me</Form.Label>
+						<input type="hidden" name={props.name} value={$formData.rememberMe} hidden />
+					</div>
+				{/snippet}
 			</Form.Control>
 			<Form.FieldErrors class="text-[12px]" />
 		</Form.Field>

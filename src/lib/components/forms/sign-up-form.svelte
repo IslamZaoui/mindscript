@@ -21,69 +21,79 @@
 
 <form method="post" use:enhance class="space-y-6">
 	<Form.Field {form} name="username">
-		<Form.Control let:attrs>
-			<Form.Label>Username</Form.Label>
-			<Input
-				autocomplete="username"
-				placeholder="username..."
-				type="text"
-				{...attrs}
-				bind:value={$formData.username}
-			/>
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Username</Form.Label>
+				<Input
+					autocomplete="username"
+					placeholder="username..."
+					type="text"
+					{...props}
+					bind:value={$formData.username}
+				/>
+			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors class="text-[12px]" />
 	</Form.Field>
 	<Form.Field {form} name="email">
-		<Form.Control let:attrs>
-			<Form.Label>Email</Form.Label>
-			<Input
-				autocomplete="email"
-				placeholder="Email..."
-				type="email"
-				{...attrs}
-				bind:value={$formData.email}
-			/>
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Email</Form.Label>
+				<Input
+					autocomplete="email"
+					placeholder="Email..."
+					type="email"
+					{...props}
+					bind:value={$formData.email}
+				/>
+			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors class="text-[12px]" />
 	</Form.Field>
 	<div class="flex gap-2">
 		<Form.Field {form} class="flex-1" name="password">
-			<Form.Control let:attrs>
-				<Form.Label>Password</Form.Label>
-				<Input
-					autocomplete="new-password"
-					placeholder="password..."
-					type="password"
-					{...attrs}
-					bind:value={$formData.password}
-				/>
+			<Form.Control>
+				{#snippet children({ props })}
+					<Form.Label>Password</Form.Label>
+					<Input
+						autocomplete="new-password"
+						placeholder="password..."
+						type="password"
+						{...props}
+						bind:value={$formData.password}
+					/>
+				{/snippet}
 			</Form.Control>
 			<Form.FieldErrors class="text-[12px]" />
 		</Form.Field>
 		<Form.Field {form} class="flex-1" name="confirmPassword">
-			<Form.Control let:attrs>
-				<Form.Label>Confirm Password</Form.Label>
-				<Input
-					autocomplete="new-password"
-					placeholder="confirm password..."
-					type="password"
-					{...attrs}
-					bind:value={$formData.confirmPassword}
-				/>
+			<Form.Control>
+				{#snippet children({ props })}
+					<Form.Label>Confirm Password</Form.Label>
+					<Input
+						autocomplete="new-password"
+						placeholder="confirm password..."
+						type="password"
+						{...props}
+						bind:value={$formData.confirmPassword}
+					/>
+				{/snippet}
 			</Form.Control>
 			<Form.FieldErrors class="text-[12px]" />
 		</Form.Field>
 	</div>
 	<Form.Field {form} name="tos">
-		<Form.Control let:attrs>
-			<div class="flex flex-row items-center space-x-3 space-y-0">
-				<Checkbox bind:checked={$formData.tos} />
-				<Form.Label class="flex items-center gap-[5px]">
-					<span>Accept</span>
-					<a href="/tos" target="_blank" class="text-primary hover:underline">terms of service</a>
-				</Form.Label>
-				<input type="hidden" name={attrs.name} value={$formData.tos} hidden />
-			</div>
+		<Form.Control>
+			{#snippet children({ props })}
+				<div class="flex flex-row items-center space-x-3 space-y-0">
+					<Checkbox bind:checked={$formData.tos} />
+					<Form.Label class="flex items-center gap-[5px]">
+						<span>Accept</span>
+						<a href="/tos" target="_blank" class="text-primary hover:underline">terms of service</a>
+					</Form.Label>
+					<input type="hidden" name={props.name} value={$formData.tos} hidden />
+				</div>
+			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors class="text-[12px]" />
 	</Form.Field>

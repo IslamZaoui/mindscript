@@ -20,15 +20,17 @@
 
 <form method="post" action="?/verifyEmail" use:enhance class="space-y-2">
 	<Form.Field {form} name="code">
-		<Form.Control let:attrs>
-			<Form.Label>Verification Code</Form.Label>
-			<Input
-				placeholder="code..."
-				type="text"
-				autocomplete="one-time-code"
-				{...attrs}
-				bind:value={$formData.code}
-			/>
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Verification Code</Form.Label>
+				<Input
+					placeholder="code..."
+					type="text"
+					autocomplete="one-time-code"
+					{...props}
+					bind:value={$formData.code}
+				/>
+			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors class="text-[12px]" />
 	</Form.Field>
